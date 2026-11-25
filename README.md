@@ -7,35 +7,46 @@ Werkt direct samen met de **planner van [Energienerds.nl](https://energienerds.n
 Gemaakt voor de **SolarFlow 3000 Mix AC+**. Werkt ook met andere Zendure-batterijen met lokale API (zenSDK):
 SolarFlow 4000 Mix, 2400 AC / AC+ / Pro, 1600 AC+ en 800 Pro / Plus.
 
-| | Gielz-pakket | **Zendure Lokaal** |
-|---|---|---|
-| Installeren | YAML-bestanden, `configuration.yaml` aanpassen, automatisering plakken | Map kopiëren, daarna alles via het scherm |
-| Batterij koppelen | IP-adres in een tekstveld typen | Automatisch zoeken, of IP invullen met controle |
-| Instellingen | ± 20 losse schuifjes en vinkjes | Eén instelscherm met uitleg bij elke instelling |
-| Nul op de meter | Automatisering die elke 5 s draait | Ingebouwd |
-| Energienerds-planner | Werkt niet | Eén knop: **Koppel aan Energienerds-planner** |
+## Waarom dit pakket?
+
+Ik wilde dat ook een **SolarFlow 3000 Mix AC+** lokaal samenwerkt met de planner van Energienerds, en dat iedereen hem kan
+instellen, ook zonder technische kennis. Dus geen YAML-bestanden, geen `configuration.yaml` en geen automatiseringen
+plakken: alles gaat via het gewone instelscherm van Home Assistant, met uitleg in begrijpelijk Nederlands.
+
+## Voordelen
+
+- **In een paar minuten klaar**: installeren via HACS, daarna drie schermen doorlopen.
+- **Batterij wordt automatisch gevonden** op je netwerk. Je kunt ook zelf het IP-adres invullen, en dat wordt meteen gecontroleerd.
+- **Eén instelscherm**, met bij elke instelling uitleg en een advieswaarde. De standaardwaarden werken voor de meeste mensen meteen.
+- **Nul op de meter ingebouwd**. Er is geen losse automatisering nodig: de batterij laadt met je zonne-overschot en levert stroom als je huis verbruikt.
+- **Werkt met de Energienerds-planner**. Eén knop koppelt de planner aan je batterij, en daarna stel je per uur in wat de batterij doet.
+- **100% lokaal**: geen Zendure-account en geen cloud, en het werkt ook als het internet even weg is.
+- **Veilig**: de batterij stopt als de slimme meter wegvalt, wordt stilgezet als Home Assistant herstart en gaat in stand-by als hij niets te doen heeft (bespaart ± 19 W).
+- **Klaar voor het Energie-dashboard**, met energietellers voor laden, ontladen, het net en de zonnepanelen.
+- **Updates via HACS**: je krijgt vanzelf een melding als er een nieuwe versie is.
 
 ---
 
 ## Wat heb je nodig?
 
 - Home Assistant **2025.2 of nieuwer**
-- Een Zendure-batterij met lokale API (werkte het Gielz-pakket bij jou, dan is dat in orde)
+- Een Zendure-batterij met lokale API (zenSDK)
 - Een slimme meter in Home Assistant, bij voorkeur een **HomeWizard P1**
 - In de Zendure-app: **HEMS uitgeschakeld**
 
 ---
 
-## Stap 0 – Oude koppeling opruimen (belangrijk!)
+## Stap 0 – Zorg dat maar één systeem de batterij aanstuurt (belangrijk!)
 
-Er mag maar **één** systeem tegelijk de batterij aansturen. Staat het Gielz-pakket er nu op, ruim het dan eerst op:
+Stuur je de batterij nu al op een andere manier aan vanuit Home Assistant, bijvoorbeeld met een eigen automatisering,
+een YAML-pakket of een andere Zendure-integratie? Zet dat dan eerst uit:
 
-1. Ga naar **Instellingen → Automatiseringen** en zet **Zendure zenSDK (Gielz)** uit (of verwijder hem).
-2. Verwijder het bestand `packages/zendure_gielz1986_nl.yaml` uit je Home Assistant-map.
-3. Heb je de officiële Zendure-integratie geïnstalleerd? Verwijder die ook, want hij ondersteunt de 3000 Mix niet.
+1. Ga naar **Instellingen → Automatiseringen** en zet automatiseringen die de batterij aansturen uit.
+2. Heb je een YAML-pakket voor je Zendure in de map `packages`? Haal dat bestand weg.
+3. Gebruik je een andere Zendure-integratie? Zet de sturing daarvan uit, of verwijder de integratie.
 4. Herstart Home Assistant.
 
-> Let op: kaarten op je dashboard die Gielz-entiteiten gebruikten, werken daarna niet meer. Die vervang je door de planner-kaart (stap 3).
+> Tip: kaarten op je dashboard die de oude entiteiten gebruikten, vervang je door de planner-kaart (stap 3).
 
 ---
 
@@ -191,7 +202,7 @@ entities:
 | *Geen batterij gevonden* | Vul het IP-adres handmatig in (Zendure-app → Apparaatinformatie). Staan Home Assistant en de batterij op hetzelfde netwerk? |
 | *Kan de batterij niet bereiken* | Klopt het IP-adres? Geef de batterij een vast IP-adres in je router. |
 | Status **Gestopt: geen P1-meter** | Je slimme meter geeft geen waarde. Controleer de P1-meter; de batterij gaat vanzelf verder. |
-| Batterij doet rare dingen | Staat HEMS uit in de Zendure-app? Staat de Gielz-automatisering echt uit (stap 0)? |
+| Batterij doet rare dingen | Staat HEMS uit in de Zendure-app? Stuurt er echt niets anders de batterij aan (stap 0)? |
 | Meer details nodig | Zendure Lokaal → ⋮ → **Diagnostische gegevens downloaden**, of zet extra logging aan (zie hieronder). |
 
 ```yaml
