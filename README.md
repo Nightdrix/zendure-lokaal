@@ -25,6 +25,27 @@ plakken: alles gaat via het gewone instelscherm van Home Assistant, met uitleg i
 - **Klaar voor het Energie-dashboard**, met energietellers voor laden, ontladen, het net en de zonnepanelen.
 - **Updates via HACS**: je krijgt vanzelf een melding als er een nieuwe versie is.
 
+## Gebaseerd op het werk van anderen
+
+Dit pakket is niet uit het niets ontstaan. Het bouwt voort op:
+
+- **[Zendure-HA-zenSDK van Gielz1986](https://github.com/Gielz1986/Zendure-HA-zenSDK)**. Daaruit komt de kennis hoe je een
+  Zendure-batterij volledig lokaal via de zenSDK-API aanstuurt. Het gaat om:
+  - welke instellingen je naar de batterij stuurt en hoe (`acMode`, `inputLimit`, `outputLimit`, `socSet`/`minSoc`, `gridReverse`);
+  - het werkgeheugen-trucje (`smartMode`), zodat het flashgeheugen niet slijt;
+  - de stand-by tegen sluipverbruik;
+  - de noodstop als de P1-meter wegvalt;
+  - de capaciteit per accupakket, ook voor de 3000 Mix;
+  - de beproefde advieswaarden voor startdrempels en marges.
+
+  Zonder dat werk was dit pakket er niet geweest.
+- **[De officiële Zendure-integratie](https://github.com/Zendure/Zendure-HA)**. Daaruit komen de bedrijfsmodi en de opbouw van de
+  knoppen (zodat de Energienerds-planner ermee werkt), het rekenprincipe van de nul-op-de-meter-regeling en het herkennen
+  van accupakketten aan hun serienummer.
+- **[De planner van Energienerds.nl](https://github.com/Mediacj/zendure-schedule)**: het dashboard waarmee je per uur plant.
+
+Dit pakket voegt daar vooral **gebruiksgemak** aan toe: alles in één integratie, in te stellen via het scherm, met uitleg erbij.
+
 ---
 
 ## Wat heb je nodig?
@@ -227,4 +248,4 @@ pip install pytest-homeassistant-custom-component
 pytest
 ```
 
-Met dank aan het werk van [Gielz1986](https://github.com/Gielz1986/Zendure-HA-zenSDK) en de [officiële Zendure-integratie](https://github.com/Zendure/Zendure-HA), waarop de regeling en standaardwaarden zijn gebaseerd.
+Met dank aan [Gielz1986](https://github.com/Gielz1986/Zendure-HA-zenSDK), de makers van de [officiële Zendure-integratie](https://github.com/Zendure/Zendure-HA) en [Energienerds.nl](https://energienerds.nl/) (zie *Gebaseerd op het werk van anderen* bovenaan).
