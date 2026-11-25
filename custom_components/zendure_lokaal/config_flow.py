@@ -209,7 +209,8 @@ class ZendureLokaalConfigFlow(ConfigFlow, domain=DOMAIN):
         self._host = host
         self._report = report
         serial = self._data.serial or host
-        await self.async_set_unique_id(serial)
+        # raise_on_progress=False: een half afgemaakte eerdere poging blokkeert niet.
+        await self.async_set_unique_id(serial, raise_on_progress=False)
         self._abort_if_unique_id_configured(updates={CONF_HOST: host})
         return await self.async_step_p1()
 

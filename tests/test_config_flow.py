@@ -54,6 +54,17 @@ async def test_volledige_flow_met_ip(hass: HomeAssistant, fake_server: str) -> N
     assert result["result"].unique_id == FakeZendure().sn
 
 
+async def test_half_afgemaakte_poging_blokkeert_niet(hass: HomeAssistant, fake_server: str) -> None:
+    _p1(hass)
+    eerste = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
+    eerste = await hass.config_entries.flow.async_configure(eerste["flow_id"], {CONF_HOST: fake_server})
+    assert eerste["step_id"] == "p1"  # venster weggeklikt zonder af te ronden
+
+    tweede = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
+    tweede = await hass.config_entries.flow.async_configure(tweede["flow_id"], {CONF_HOST: fake_server})
+    assert tweede["step_id"] == "p1"
+
+
 async def test_verkeerd_ip_geeft_nette_fout(hass: HomeAssistant) -> None:
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
     result = await hass.config_entries.flow.async_configure(result["flow_id"], {CONF_HOST: "127.0.0.1:1"})

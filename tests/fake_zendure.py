@@ -196,10 +196,18 @@ class FakeZendure:
         async def p1(_request: web.Request) -> web.Response:
             return web.json_response({"active_power_w": round(self.p1)})
 
+        async def sim(request: web.Request) -> web.Response:
+            """Demo: verander verbruik/zon terwijl hij draait (load, house_solar, solar)."""
+            for key, value in (await request.json()).items():
+                if key in ("house_load", "house_solar", "solar", "soc"):
+                    setattr(self, key, float(value))
+            return web.json_response({"house_load": self.house_load, "house_solar": self.house_solar, "solar": self.solar})
+
         app = web.Application()
         app.router.add_get("/properties/report", report)
         app.router.add_post("/properties/write", write)
         app.router.add_get("/p1", p1)
+        app.router.add_post("/sim", sim)
         return app
 
 
@@ -210,8 +218,10 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=8080)
     parser.add_argument("--load", type=float, default=400, help="huisverbruik (W)")
     parser.add_argument("--house-solar", type=float, default=0, help="losse zonnepanelen (W)")
+    parser.add_argument("--solar", type=float, default=0, help="zonnepanelen op de batterij (W)")
+    parser.add_argument("--soc", type=float, default=50, help="start-laadniveau (%%)")
     args = parser.parse_args()
-    fake = FakeZendure(house_load=args.load, house_solar=args.house_solar)
+    fake = FakeZendure(house_load=args.load, house_solar=args.house_solar, solar=args.solar, soc=args.soc)
 
     async def tick() -> None:
         while True:

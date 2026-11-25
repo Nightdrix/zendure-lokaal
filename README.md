@@ -4,8 +4,16 @@ Je Zendure-thuisbatterij **100% lokaal** in Home Assistant, ingesteld met een pa
 Er is geen Zendure-account, geen cloud, geen YAML en geen automatisering nodig.
 Werkt direct samen met de **planner van [Energienerds.nl](https://energienerds.nl/)**.
 
-Gemaakt voor de **SolarFlow 3000 Mix AC+**. Werkt ook met andere Zendure-batterijen met lokale API (zenSDK):
-SolarFlow 4000 Mix, 2400 AC / AC+ / Pro, 1600 AC+ en 800 Pro / Plus.
+Gemaakt voor de **SolarFlow 3000 Mix AC+**. Omdat de lokale API (zenSDK) hetzelfde is, zou hij ook moeten werken met
+de SolarFlow 4000 Mix, 2400 AC / AC+ / Pro, 1600 AC+ en 800 Pro / Plus.
+
+> 🧪 **Testversie.** Alles is getest in een testopstelling met een **gesimuleerde** SolarFlow 3000 Mix AC+ en P1-meter
+> (54 automatische tests en een echte Home Assistant). Met een **echte batterij is hij nog niet getest.**
+> Probeer je hem uit? Kijk de eerste keer even mee, en laat je ervaring achter via
+> [Issues](https://github.com/Nightdrix/zendure-lokaal/issues).
+
+![Voorbeeld-dashboard (testopstelling)](images/07-dashboard.png)
+<sub>*Voorbeeld-dashboard in de testopstelling met een gesimuleerde batterij. Meer schermen staan onder [Zo ziet het eruit](#zo-ziet-het-eruit).*</sub>
 
 ## Waarom dit pakket?
 
@@ -45,6 +53,42 @@ Dit pakket is niet uit het niets ontstaan. Het bouwt voort op:
 - **[De planner van Energienerds.nl](https://github.com/Mediacj/zendure-schedule)**: het dashboard waarmee je per uur plant.
 
 Dit pakket voegt daar vooral **gebruiksgemak** aan toe: alles in één integratie, in te stellen via het scherm, met uitleg erbij.
+
+---
+
+## Zo ziet het eruit
+
+> ⚠️ Alle schermafbeeldingen hieronder komen uit een **testopstelling**: een echte Home Assistant met een
+> **gesimuleerde** SolarFlow 3000 Mix AC+ en P1-meter. Daardoor zie je bijvoorbeeld `127.0.0.1:8080` als adres
+> en `HOA3MIX0000TEST` als serienummer. **Met een echte batterij is het pakket nog niet getest.**
+
+**Stap 1 – Batterij koppelen.** Laat het veld leeg om automatisch te zoeken, of vul het IP-adres in.
+
+<img src="images/01-batterij-koppelen.png" alt="Batterij koppelen (testopstelling)" width="480">
+
+**Stap 2 – Slimme meter kiezen.** Hij laat meteen zien welke batterij hij heeft gevonden.
+
+<img src="images/02-slimme-meter.png" alt="Slimme meter kiezen (testopstelling)" width="480">
+
+**Stap 3 – Hoe mag de batterij werken?** De standaardwaarden zijn goed, dus je klikt gewoon op *Verzenden*.
+
+<img src="images/03-instellingen.png" alt="Instellingen (testopstelling)" width="480">
+
+**Klaar.** De batterij en de accupakketten verschijnen als apparaten.
+
+<img src="images/04-klaar.png" alt="Apparaten aangemaakt (testopstelling)" width="330">
+
+<details>
+<summary><b>Apparaatpagina</b>: alle knoppen en sensoren (testopstelling)</summary>
+
+![Apparaatpagina (testopstelling)](images/05-apparaat.png)
+</details>
+
+<details>
+<summary><b>Configureren</b>: alle instellingen met uitleg (testopstelling)</summary>
+
+<img src="images/06-configureren.png" alt="Configureren (testopstelling)" width="480">
+</details>
 
 ---
 
@@ -196,23 +240,19 @@ Op de apparaatpagina van je batterij staan onder andere:
 - *Thuisbatterij* → energie de batterij in: **Energie geladen**, energie de batterij uit: **Energie ontladen**
 - *Zonnepanelen* → **Energie zonnepanelen** (alleen als er panelen op de batterij zitten)
 
-<details>
-<summary>Voorbeeld: eenvoudige overzichtskaart (zonder extra installaties)</summary>
+### Voorbeeld-dashboard
 
-Vervang `solarflow_3000_mix_ac` door de naam van jouw batterij als die anders is.
+Het dashboard van de schermafbeelding bovenaan kun je zelf overnemen. Je hebt er niets extra's voor nodig, alleen
+standaardkaarten:
 
-```yaml
-type: entities
-title: Thuisbatterij
-entities:
-  - entity: select.solarflow_3000_mix_ac_bedrijfsmodus
-  - entity: sensor.solarflow_3000_mix_ac_status
-  - entity: sensor.solarflow_3000_mix_ac_laadniveau
-  - entity: sensor.solarflow_3000_mix_ac_accuvermogen_ontladen_laden
-  - entity: sensor.solarflow_3000_mix_ac_netvermogen_p1
-  - entity: sensor.solarflow_3000_mix_ac_beschikbare_energie
-```
-</details>
+1. Ga naar **Instellingen → Dashboards → Dashboard toevoegen → Nieuw dashboard vanaf nul** en noem het *Thuisbatterij*.
+2. Open het nieuwe dashboard → ✏️ (bewerken) → **⋮** → **Ruwe configuratie-editor**.
+3. Plak de inhoud van [`dashboard_voorbeeld.yaml`](dashboard_voorbeeld.yaml) en klik op **Opslaan**.
+
+Heet jouw batterij anders dan *SolarFlow 3000 Mix AC+*? Vervang dan in de tekst `solarflow_3000_mix_ac` door de naam
+die jij ziet (Ctrl+H = zoeken en vervangen).
+
+De **Energienerds-planner** (stap 3) zet je er gewoon als extra kaart bij.
 
 ---
 

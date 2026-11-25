@@ -63,7 +63,8 @@
     "abort": {
       "already_configured": "Deze batterij is al gekoppeld. Het IP-adres is bijgewerkt.",
       "reconfigure_successful": "Het IP-adres is bijgewerkt.",
-      "wrong_device": "Op dit adres staat een andere batterij dan de gekoppelde."
+      "wrong_device": "Op dit adres staat een andere batterij dan de gekoppelde.",
+      "already_in_progress": "Je bent deze batterij al aan het koppelen in een ander venster. Rond dat af, of sluit het en probeer opnieuw."
     }
   },
   "options": {
