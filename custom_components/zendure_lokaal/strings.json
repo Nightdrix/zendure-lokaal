@@ -1,0 +1,331 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect your Zendure battery",
+        "description": "Your Zendure battery is connected directly over your home network. No Zendure account or cloud is needed.\n\n**Leave the field empty** to search for the battery automatically (takes a few seconds).\n\nDoesn't work? Enter the IP address instead. You can find it in the Zendure app: open your battery → gear ⚙️ → **Device information** → **IP address**.\n\n⚠️ Turn **HEMS off** in the Zendure app, otherwise the app and Home Assistant will fight over the battery.",
+        "data": {
+          "host": "Battery IP address (empty = search automatically)"
+        },
+        "data_description": {
+          "host": "For example 192.168.1.50. Tip: give the battery a fixed IP address in your router so the connection keeps working."
+        }
+      },
+      "pick": {
+        "title": "Which battery?",
+        "description": "Multiple Zendure batteries were found. Pick the one you want to connect.",
+        "data": {
+          "host": "Battery"
+        }
+      },
+      "p1": {
+        "title": "Choose your smart meter",
+        "description": "✅ Found: **{name}** (serial {serial}) at {host}.\n\nTo keep your meter at zero, the battery needs to know how much power your home is drawing from or returning to the grid right now. Choose the sensor of your smart meter below.",
+        "data": {
+          "p1_sensor": "Grid power of your smart meter",
+          "p1_export_sensor": "Export (only with a separate sensor)",
+          "p1_invert": "My meter shows export as a positive number"
+        },
+        "data_description": {
+          "p1_sensor": "With a HomeWizard P1 meter this is usually called **Power**. The value is positive when you draw from the grid and negative when you export.",
+          "p1_export_sensor": "Leave empty for HomeWizard. Only fill in when your meter reports import and export as two separate sensors (for example the DSMR integration: pick 'Current power production').",
+          "p1_invert": "Only enable when your meter works exactly the other way around (export positive, import negative)."
+        }
+      },
+      "settings": {
+        "title": "How may the battery work?",
+        "description": "Almost done! The defaults below are fine for most people: you can simply click **Submit**. Everything can be changed later via **Configure**.",
+        "data": {
+          "start_mode": "How do you want to start?",
+          "max_charge_power": "Maximum charge power",
+          "max_discharge_power": "Maximum discharge power"
+        },
+        "data_description": {
+          "start_mode": "'Zero on the meter' charges the battery with your solar surplus and discharges when you use power. With 'Off' the battery does nothing until you choose a mode yourself or link the Energienerds planner.",
+          "max_charge_power": "Maximum power (W) the battery may charge with. Lower it if your circuit (socket/fuse) can't handle it.",
+          "max_discharge_power": "Maximum power (W) the battery may deliver to your home."
+        }
+      },
+      "reconfigure": {
+        "title": "Change IP address",
+        "description": "Did your battery get a new IP address? Enter the new address here.",
+        "data": {
+          "host": "Battery IP address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot reach the battery at this address. Check that the IP address is correct, the battery is on and on the same network as Home Assistant.",
+      "not_found": "No battery found on your network. Enter the IP address manually (see the Zendure app → Device information).",
+      "p1_no_value": "The selected sensor doesn't report a number right now. Choose the power sensor of your smart meter (in watts or kilowatts).",
+      "p1_same_sensor": "You picked the same sensor twice. Leave 'Export' empty when your meter has a single sensor."
+    },
+    "abort": {
+      "already_configured": "This battery is already connected. The IP address has been updated.",
+      "reconfigure_successful": "The IP address has been updated.",
+      "wrong_device": "A different battery than the connected one is at this address."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Zendure Local settings",
+        "description": "Adjust how the battery works. Not sure? Keep the defaults.",
+        "data": {
+          "p1_sensor": "Grid power of your smart meter",
+          "p1_export_sensor": "Export (only with a separate sensor)",
+          "p1_invert": "My meter shows export as a positive number",
+          "max_charge_power": "Maximum charge power",
+          "max_discharge_power": "Maximum discharge power"
+        },
+        "data_description": {
+          "p1_sensor": "The sensor that shows how much power your home draws from (positive) or returns to (negative) the grid.",
+          "p1_export_sensor": "Only needed when your meter reports import and export as two separate sensors.",
+          "p1_invert": "Only enable when your meter works exactly the other way around.",
+          "max_charge_power": "Maximum power (W) the battery may charge with.",
+          "max_discharge_power": "Maximum power (W) the battery may deliver to your home."
+        },
+        "sections": {
+          "geavanceerd": {
+            "name": "Advanced (fine tuning)",
+            "description": "These values control how precisely and how calmly the battery follows your usage.",
+            "data": {
+              "discharge_start": "Start discharging from",
+              "charge_start": "Start charging from",
+              "discharge_margin": "Remaining import while discharging",
+              "charge_margin": "Remaining export while charging",
+              "standby_minutes": "Go to standby after",
+              "interval": "Adjust every",
+              "capacity": "Battery capacity"
+            },
+            "data_description": {
+              "discharge_start": "The battery only starts discharging when your home draws at least this many watts from the grid, so it doesn't react to every small spike. Advice: 100 W.",
+              "charge_start": "The battery only starts charging when you export at least this many watts. Advice: 300 W.",
+              "discharge_margin": "While discharging you keep drawing this many watts from the grid on purpose, so the battery never pushes power back to the grid. Advice: 10 W.",
+              "charge_margin": "While charging you keep exporting this many watts on purpose, so the battery never charges from the grid. Advice: 50 W.",
+              "standby_minutes": "When the battery has been idle this long it goes into deep standby, saving about 19 W. 0 = never. Advice: 15 minutes.",
+              "interval": "How often Home Assistant reads and adjusts the battery. Advice: 5 seconds.",
+              "capacity": "0 = detect automatically. Only fill in when the 'Capacity' sensor shows a wrong value."
+            }
+          }
+        }
+      }
+    },
+    "error": {
+      "p1_no_value": "The selected sensor doesn't report a number right now. Choose the power sensor of your smart meter (in watts or kilowatts).",
+      "p1_same_sensor": "You picked the same sensor twice. Leave 'Export' empty when your meter has a single sensor."
+    }
+  },
+  "selector": {
+    "start_mode": {
+      "options": {
+        "smart": "Zero on the meter (recommended)",
+        "off": "Off – I'll choose later"
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "operation": {
+        "name": "Operation mode",
+        "state": {
+          "off": "Off (manual/planner)",
+          "manual": "Fixed power",
+          "smart": "Zero on the meter",
+          "smart_discharging": "Smart discharging",
+          "smart_charging": "Smart charging",
+          "store_solar": "Store solar only"
+        }
+      },
+      "ac_mode": {
+        "name": "AC mode",
+        "state": {
+          "input": "Charging (input)",
+          "output": "Discharging (output)"
+        }
+      }
+    },
+    "number": {
+      "input_limit": {
+        "name": "Charge power"
+      },
+      "output_limit": {
+        "name": "Discharge power"
+      },
+      "soc_set": {
+        "name": "Maximum charge level"
+      },
+      "min_soc": {
+        "name": "Minimum charge level"
+      },
+      "manual_power": {
+        "name": "Fixed power (+ discharge / − charge)"
+      }
+    },
+    "sensor": {
+      "electric_level": {
+        "name": "Charge level"
+      },
+      "status": {
+        "name": "Status",
+        "state": {
+          "charging": "Charging",
+          "discharging": "Discharging",
+          "idle": "Waiting",
+          "standby": "Standby",
+          "full": "Full",
+          "empty": "Empty",
+          "p1_missing": "Stopped: no P1 meter",
+          "calibrating": "Calibrating"
+        }
+      },
+      "battery_power": {
+        "name": "Battery power (+ discharge / − charge)"
+      },
+      "charge_power": {
+        "name": "Battery charge power"
+      },
+      "discharge_power": {
+        "name": "Battery discharge power"
+      },
+      "home_output": {
+        "name": "Power to home"
+      },
+      "grid_input": {
+        "name": "Power from grid"
+      },
+      "solar_power": {
+        "name": "Solar panels"
+      },
+      "solar_power_1": {
+        "name": "Solar input 1"
+      },
+      "solar_power_2": {
+        "name": "Solar input 2"
+      },
+      "solar_power_3": {
+        "name": "Solar input 3"
+      },
+      "solar_power_4": {
+        "name": "Solar input 4"
+      },
+      "solar_power_5": {
+        "name": "Solar input 5"
+      },
+      "solar_power_6": {
+        "name": "Solar input 6"
+      },
+      "offgrid_power": {
+        "name": "Off-grid socket"
+      },
+      "target_power": {
+        "name": "Target power"
+      },
+      "p1_power": {
+        "name": "Grid power (P1)"
+      },
+      "available_energy": {
+        "name": "Available energy"
+      },
+      "remaining_time": {
+        "name": "Remaining time"
+      },
+      "capacity": {
+        "name": "Capacity"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "max_charge_limit": {
+        "name": "Device max charge power"
+      },
+      "max_discharge_limit": {
+        "name": "Device max discharge power"
+      },
+      "battery_voltage": {
+        "name": "Battery voltage"
+      },
+      "wifi_signal": {
+        "name": "Wi-Fi signal"
+      },
+      "pack_count": {
+        "name": "Number of battery packs"
+      },
+      "energy_charged": {
+        "name": "Energy charged"
+      },
+      "energy_discharged": {
+        "name": "Energy discharged"
+      },
+      "energy_home": {
+        "name": "Energy to home"
+      },
+      "energy_grid": {
+        "name": "Energy from grid"
+      },
+      "energy_solar": {
+        "name": "Solar energy"
+      },
+      "pack_soc": {
+        "name": "Charge level"
+      },
+      "pack_temperature": {
+        "name": "Temperature"
+      },
+      "pack_power": {
+        "name": "Power"
+      },
+      "pack_cell_delta": {
+        "name": "Cell voltage difference"
+      },
+      "pack_voltage": {
+        "name": "Voltage"
+      }
+    },
+    "binary_sensor": {
+      "hems_state": {
+        "name": "HEMS active"
+      },
+      "heat_state": {
+        "name": "Battery heating"
+      },
+      "error": {
+        "name": "Fault"
+      }
+    },
+    "switch": {
+      "pv_export": {
+        "name": "Export solar when battery is full"
+      }
+    },
+    "button": {
+      "link_planner": {
+        "name": "Link Energienerds planner"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Cannot reach the battery at {host}."
+    },
+    "planner_not_installed": {
+      "message": "The Energienerds planner (Zendure Schedule) is not installed yet. Install it via HACS first and restart Home Assistant."
+    },
+    "planner_already_linked": {
+      "message": "The Energienerds planner is already linked to this battery. Add the 'Zendure Schedule' card to your dashboard."
+    },
+    "planner_link_failed": {
+      "message": "Linking the Energienerds planner failed. Check the log for details, or link it manually (see the guide)."
+    }
+  },
+  "issues": {
+    "p1_missing": {
+      "title": "Battery stopped: smart meter reports no value",
+      "description": "The sensor **{sensor}** hasn't reported a (new) value for a minute. Without a smart meter the battery can't safely keep the meter at zero, so it has been stopped.\n\nCheck that your P1 meter is online. As soon as the meter works again the battery continues automatically and this message disappears."
+    },
+    "hems_active": {
+      "title": "Turn off HEMS in the Zendure app",
+      "description": "**HEMS** is enabled on your battery. The Zendure app then controls the battery, which conflicts with Home Assistant.\n\nOpen the Zendure app, go to your battery and turn **HEMS off**. This message disappears automatically afterwards."
+    }
+  }
+}

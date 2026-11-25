@@ -1,0 +1,331 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Zendure-batterij koppelen",
+        "description": "We koppelen je Zendure-batterij rechtstreeks via je thuisnetwerk. Er is geen Zendure-account of cloud nodig.\n\n**Laat het veld leeg** om de batterij automatisch te laten zoeken (duurt een paar seconden).\n\nLukt dat niet? Vul dan het IP-adres in. Dat vind je in de Zendure-app: open je batterij → tandwiel ⚙️ → **Apparaatinformatie** → **IP-adres**.\n\n⚠️ Zet in de Zendure-app **HEMS uit**, anders vechten de app en Home Assistant om de batterij.",
+        "data": {
+          "host": "IP-adres van de batterij (leeg = automatisch zoeken)"
+        },
+        "data_description": {
+          "host": "Bijvoorbeeld 192.168.1.50. Tip: geef de batterij in je router een vast IP-adres, dan blijft de koppeling altijd werken."
+        }
+      },
+      "pick": {
+        "title": "Welke batterij?",
+        "description": "Er zijn meerdere Zendure-batterijen gevonden. Kies de batterij die je wilt koppelen.",
+        "data": {
+          "host": "Batterij"
+        }
+      },
+      "p1": {
+        "title": "Slimme meter kiezen",
+        "description": "✅ Gevonden: **{name}** (serienummer {serial}) op {host}.\n\nOm 'nul op de meter' te kunnen doen moet de batterij weten hoeveel stroom je huis op dit moment van het net haalt of teruglevert. Kies hieronder de sensor van je slimme meter.",
+        "data": {
+          "p1_sensor": "Netvermogen van je slimme meter",
+          "p1_export_sensor": "Teruglevering (alleen bij aparte sensor)",
+          "p1_invert": "Mijn meter toont teruglevering als positief getal"
+        },
+        "data_description": {
+          "p1_sensor": "Bij een HomeWizard P1-meter heet deze meestal **Vermogen** of **Power**. De waarde is positief als je stroom van het net haalt en negatief als je teruglevert.",
+          "p1_export_sensor": "Laat leeg bij een HomeWizard. Alleen invullen als je meter afname en teruglevering in twee losse sensoren geeft (bijvoorbeeld de DSMR-integratie: kies hier 'Huidige teruglevering').",
+          "p1_invert": "Alleen aanzetten als je meter het precies andersom doet (teruglevering positief, afname negatief)."
+        }
+      },
+      "settings": {
+        "title": "Hoe mag de batterij werken?",
+        "description": "Bijna klaar! De standaardwaarden hieronder zijn voor de meeste mensen goed: je kunt gewoon op **Verzenden** klikken. Alles is later nog aan te passen via **Configureren**.",
+        "data": {
+          "start_mode": "Waarmee wil je beginnen?",
+          "max_charge_power": "Maximaal laadvermogen",
+          "max_discharge_power": "Maximaal ontlaadvermogen"
+        },
+        "data_description": {
+          "start_mode": "'Nul op de meter' laadt de batterij met je zonne-overschot en ontlaadt als je stroom verbruikt. Met 'Uit' doet de batterij nog niets tot je zelf een modus kiest of de Energienerds-planner koppelt.",
+          "max_charge_power": "Met hoeveel watt de batterij maximaal mag laden. Lager zetten kan als je groep (stopcontact/zekering) het niet aankan.",
+          "max_discharge_power": "Met hoeveel watt de batterij maximaal stroom aan je huis mag leveren."
+        }
+      },
+      "reconfigure": {
+        "title": "IP-adres wijzigen",
+        "description": "Heeft je batterij een nieuw IP-adres gekregen? Vul hier het nieuwe adres in.",
+        "data": {
+          "host": "IP-adres van de batterij"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan de batterij niet bereiken op dit adres. Controleer of het IP-adres klopt, de batterij aan staat en op hetzelfde netwerk zit als Home Assistant.",
+      "not_found": "Geen batterij gevonden op je netwerk. Vul het IP-adres handmatig in (zie de Zendure-app → Apparaatinformatie).",
+      "p1_no_value": "De gekozen sensor geeft op dit moment geen getal. Kies de vermogenssensor van je slimme meter (in watt of kilowatt).",
+      "p1_same_sensor": "Je hebt twee keer dezelfde sensor gekozen. Laat 'Teruglevering' leeg als je meter één sensor heeft."
+    },
+    "abort": {
+      "already_configured": "Deze batterij is al gekoppeld. Het IP-adres is bijgewerkt.",
+      "reconfigure_successful": "Het IP-adres is bijgewerkt.",
+      "wrong_device": "Op dit adres staat een andere batterij dan de gekoppelde."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Instellingen Zendure Lokaal",
+        "description": "Pas hier aan hoe de batterij werkt. Twijfel je? Laat dan de standaardwaarden staan.",
+        "data": {
+          "p1_sensor": "Netvermogen van je slimme meter",
+          "p1_export_sensor": "Teruglevering (alleen bij aparte sensor)",
+          "p1_invert": "Mijn meter toont teruglevering als positief getal",
+          "max_charge_power": "Maximaal laadvermogen",
+          "max_discharge_power": "Maximaal ontlaadvermogen"
+        },
+        "data_description": {
+          "p1_sensor": "De sensor die laat zien hoeveel stroom je huis nu van het net haalt (positief) of teruglevert (negatief).",
+          "p1_export_sensor": "Alleen nodig als je meter afname en teruglevering in twee losse sensoren geeft.",
+          "p1_invert": "Alleen aanzetten als je meter het precies andersom doet.",
+          "max_charge_power": "Met hoeveel watt de batterij maximaal mag laden.",
+          "max_discharge_power": "Met hoeveel watt de batterij maximaal stroom aan je huis mag leveren."
+        },
+        "sections": {
+          "geavanceerd": {
+            "name": "Geavanceerd (fijnafstelling)",
+            "description": "Deze waarden bepalen hoe precies en hoe rustig de batterij bijstuurt.",
+            "data": {
+              "discharge_start": "Ontladen begint vanaf",
+              "charge_start": "Laden begint vanaf",
+              "discharge_margin": "Restafname tijdens ontladen",
+              "charge_margin": "Restteruglevering tijdens laden",
+              "standby_minutes": "Naar stand-by na",
+              "interval": "Bijsturen elke",
+              "capacity": "Capaciteit van de batterij"
+            },
+            "data_description": {
+              "discharge_start": "De batterij begint pas te ontladen als je huis minstens zoveel watt van het net haalt. Zo springt hij niet aan voor elk klein piekje. Advies: 100 W.",
+              "charge_start": "De batterij begint pas te laden als je minstens zoveel watt teruglevert. Advies: 300 W.",
+              "discharge_margin": "Zoveel watt blijf je tijdens ontladen bewust van het net halen, zodat de batterij nooit stroom terug het net op stuurt. Advies: 10 W.",
+              "charge_margin": "Zoveel watt blijf je tijdens laden bewust terugleveren, zodat de batterij nooit stroom van het net gebruikt om te laden. Advies: 50 W.",
+              "standby_minutes": "Als de batterij zo lang niets doet gaat hij in diepe stand-by. Dat scheelt ongeveer 19 W sluipverbruik. 0 = nooit. Advies: 15 minuten.",
+              "interval": "Hoe vaak Home Assistant de batterij uitleest en bijstuurt. Advies: 5 seconden.",
+              "capacity": "0 = automatisch herkennen. Alleen invullen als de 'Capaciteit'-sensor een verkeerde waarde laat zien."
+            }
+          }
+        }
+      }
+    },
+    "error": {
+      "p1_no_value": "De gekozen sensor geeft op dit moment geen getal. Kies de vermogenssensor van je slimme meter (in watt of kilowatt).",
+      "p1_same_sensor": "Je hebt twee keer dezelfde sensor gekozen. Laat 'Teruglevering' leeg als je meter één sensor heeft."
+    }
+  },
+  "selector": {
+    "start_mode": {
+      "options": {
+        "smart": "Nul op de meter (aanbevolen)",
+        "off": "Uit – ik kies later zelf"
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "operation": {
+        "name": "Bedrijfsmodus",
+        "state": {
+          "off": "Uit (handmatig/planner)",
+          "manual": "Vast vermogen",
+          "smart": "Nul op de meter",
+          "smart_discharging": "Slim ontladen",
+          "smart_charging": "Slim laden",
+          "store_solar": "Alleen zonne-energie opslaan"
+        }
+      },
+      "ac_mode": {
+        "name": "AC-modus",
+        "state": {
+          "input": "Laden (invoer)",
+          "output": "Ontladen (uitvoer)"
+        }
+      }
+    },
+    "number": {
+      "input_limit": {
+        "name": "Laadvermogen"
+      },
+      "output_limit": {
+        "name": "Ontlaadvermogen"
+      },
+      "soc_set": {
+        "name": "Maximaal laadniveau"
+      },
+      "min_soc": {
+        "name": "Minimaal laadniveau"
+      },
+      "manual_power": {
+        "name": "Vast vermogen (+ ontladen / − laden)"
+      }
+    },
+    "sensor": {
+      "electric_level": {
+        "name": "Laadniveau"
+      },
+      "status": {
+        "name": "Status",
+        "state": {
+          "charging": "Laden",
+          "discharging": "Ontladen",
+          "idle": "Wacht",
+          "standby": "Stand-by",
+          "full": "Vol",
+          "empty": "Leeg",
+          "p1_missing": "Gestopt: geen P1-meter",
+          "calibrating": "Kalibreren"
+        }
+      },
+      "battery_power": {
+        "name": "Accuvermogen (+ ontladen / − laden)"
+      },
+      "charge_power": {
+        "name": "Laadvermogen accu"
+      },
+      "discharge_power": {
+        "name": "Ontlaadvermogen accu"
+      },
+      "home_output": {
+        "name": "Vermogen naar huis"
+      },
+      "grid_input": {
+        "name": "Vermogen van het net"
+      },
+      "solar_power": {
+        "name": "Zonnepanelen"
+      },
+      "solar_power_1": {
+        "name": "Zonnepanelen ingang 1"
+      },
+      "solar_power_2": {
+        "name": "Zonnepanelen ingang 2"
+      },
+      "solar_power_3": {
+        "name": "Zonnepanelen ingang 3"
+      },
+      "solar_power_4": {
+        "name": "Zonnepanelen ingang 4"
+      },
+      "solar_power_5": {
+        "name": "Zonnepanelen ingang 5"
+      },
+      "solar_power_6": {
+        "name": "Zonnepanelen ingang 6"
+      },
+      "offgrid_power": {
+        "name": "Off-grid stopcontact"
+      },
+      "target_power": {
+        "name": "Doelvermogen"
+      },
+      "p1_power": {
+        "name": "Netvermogen (P1)"
+      },
+      "available_energy": {
+        "name": "Beschikbare energie"
+      },
+      "remaining_time": {
+        "name": "Resterende tijd"
+      },
+      "capacity": {
+        "name": "Capaciteit"
+      },
+      "temperature": {
+        "name": "Temperatuur"
+      },
+      "max_charge_limit": {
+        "name": "Max. laadvermogen apparaat"
+      },
+      "max_discharge_limit": {
+        "name": "Max. ontlaadvermogen apparaat"
+      },
+      "battery_voltage": {
+        "name": "Accuspanning"
+      },
+      "wifi_signal": {
+        "name": "Wifi-signaal"
+      },
+      "pack_count": {
+        "name": "Aantal accupakketten"
+      },
+      "energy_charged": {
+        "name": "Energie geladen"
+      },
+      "energy_discharged": {
+        "name": "Energie ontladen"
+      },
+      "energy_home": {
+        "name": "Energie naar huis"
+      },
+      "energy_grid": {
+        "name": "Energie van het net"
+      },
+      "energy_solar": {
+        "name": "Energie zonnepanelen"
+      },
+      "pack_soc": {
+        "name": "Laadniveau"
+      },
+      "pack_temperature": {
+        "name": "Temperatuur"
+      },
+      "pack_power": {
+        "name": "Vermogen"
+      },
+      "pack_cell_delta": {
+        "name": "Celspanningsverschil"
+      },
+      "pack_voltage": {
+        "name": "Spanning"
+      }
+    },
+    "binary_sensor": {
+      "hems_state": {
+        "name": "HEMS actief"
+      },
+      "heat_state": {
+        "name": "Accuverwarming"
+      },
+      "error": {
+        "name": "Storing"
+      }
+    },
+    "switch": {
+      "pv_export": {
+        "name": "Zonnestroom terugleveren als accu vol is"
+      }
+    },
+    "button": {
+      "link_planner": {
+        "name": "Koppel aan Energienerds-planner"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Kan de batterij op {host} niet bereiken."
+    },
+    "planner_not_installed": {
+      "message": "De Energienerds-planner (Zendure Schedule) is nog niet geïnstalleerd. Installeer hem eerst via HACS en herstart Home Assistant."
+    },
+    "planner_already_linked": {
+      "message": "De Energienerds-planner is al gekoppeld aan deze batterij. Voeg de kaart 'Zendure Schedule' toe aan je dashboard."
+    },
+    "planner_link_failed": {
+      "message": "Koppelen aan de Energienerds-planner is niet gelukt. Kijk in het logboek voor details, of koppel hem handmatig (zie de handleiding)."
+    }
+  },
+  "issues": {
+    "p1_missing": {
+      "title": "Batterij gestopt: slimme meter geeft geen waarde",
+      "description": "De sensor **{sensor}** geeft al een minuut geen (nieuwe) waarde. Zonder slimme meter kan de batterij niet veilig 'nul op de meter' doen, dus hij is veiligheidshalve gestopt.\n\nControleer of je P1-meter online is. Zodra de meter weer werkt, gaat de batterij vanzelf verder en verdwijnt deze melding."
+    },
+    "hems_active": {
+      "title": "Zet HEMS uit in de Zendure-app",
+      "description": "Op je batterij staat **HEMS** aan. Dan stuurt de Zendure-app de batterij aan en botst dat met Home Assistant.\n\nOpen de Zendure-app, ga naar je batterij en zet **HEMS uit**. Deze melding verdwijnt daarna vanzelf."
+    }
+  }
+}
