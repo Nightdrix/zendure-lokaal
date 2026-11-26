@@ -165,8 +165,23 @@ Met de planner van Energienerds stel je per uur in wat de batterij moet doen, bi
 2. Ga naar **Instellingen → Apparaten & diensten → Zendure Lokaal** en open je batterij (het apparaat).
 3. Klik onder *Configuratie* op **Koppel aan Energienerds-planner** → *Indrukken*.
    De planner wordt nu automatisch met de juiste knoppen ingesteld.
-4. Open je dashboard → ✏️ (bewerken) → **Kaart toevoegen** → zoek op **schedule** → kies *Zendure Schedule*.
-   Staat hij er niet tussen? Ververs de pagina met **Ctrl+F5**.
+4. Zet de planner op een dashboard. Dat kan op twee manieren:
+   - **Als kaart op een bestaand dashboard:** ✏️ (bewerken) → **Kaart toevoegen** → zoek op **schedule** → kies
+     *Zendure Schedule*. Staat hij er niet tussen? Ververs de pagina met **Ctrl+F5**.
+   - **Als compleet nieuw dashboard (planner + batterij-overzicht + grafieken):**
+     *Instellingen → Dashboards → Dashboard toevoegen → Nieuw dashboard vanaf nul*. Open het dashboard, klik op ✏️ en
+     dan op **⋮ → Ruwe configuratie-editor**. Selecteer alles (Ctrl+A), plak de inhoud van
+     [`dashboard_met_planner.yaml`](dashboard_met_planner.yaml) eroverheen en klik op **Opslaan**.
+
+> **Configuratiefout bij het plakken?** Het voorbeeld op de site van Energienerds (`type: custom:zendure-schedule`) is
+> **één losse kaart**. Die hoort bij *Kaart toevoegen → Handmatig*, niet in de *Ruwe configuratie-editor*. De ruwe
+> editor verwacht een heel dashboard dat begint met `views:`. Gebruik daar dus
+> [`dashboard_met_planner.yaml`](dashboard_met_planner.yaml).
+>
+> **Melding "Custom element doesn't exist: zendure-schedule"?** Dan is de planner nog niet gekoppeld of nog niet
+> geladen. Druk eerst op **Koppel aan Energienerds-planner** (punt 3), herstart Home Assistant en ververs de pagina
+> met **Ctrl+F5**. In de Home Assistant-app op je telefoon: *Instellingen → Companion-app → Probleemoplossing →
+> Frontend-cache resetten*.
 
 <details>
 <summary>Liever handmatig koppelen? Dit vul je in bij de planner</summary>
@@ -264,6 +279,9 @@ De **Energienerds-planner** (stap 3) zet je er gewoon als extra kaart bij.
 | *Kan de batterij niet bereiken* | Klopt het IP-adres? Geef de batterij een vast IP-adres in je router. |
 | Status **Gestopt: geen P1-meter** | Je slimme meter geeft geen waarde. Controleer de P1-meter; de batterij gaat vanzelf verder. |
 | Batterij doet rare dingen | Staat HEMS uit in de Zendure-app? Stuurt er echt niets anders de batterij aan (stap 0)? |
+| *Configuratiefout* bij het dashboard | Plak in de *Ruwe configuratie-editor* een heel dashboard ([`dashboard_met_planner.yaml`](dashboard_met_planner.yaml)), geen losse kaart. Zie stap 3. |
+| *Custom element doesn't exist: zendure-schedule* | Planner koppelen (stap 3), Home Assistant herstarten, pagina verversen met Ctrl+F5. |
+| Kaarten tonen *Entiteit niet beschikbaar* | Je batterij heet anders. Vervang in de dashboard-tekst `solarflow_3000_mix_ac` door de naam die jij ziet (Ctrl+H). |
 | Meer details nodig | Zendure Lokaal → ⋮ → **Diagnostische gegevens downloaden**, of zet extra logging aan (zie hieronder). |
 
 ```yaml

@@ -1,0 +1,134 @@
+# Compleet dashboard: Energienerds-planner + Zendure Lokaal (ruwe configuratie).
+#
+# Voorwaarden (eenmalig):
+#  - Zendure Lokaal is gekoppeld (batterij heet "SolarFlow 3000 Mix AC+").
+#  - De Energienerds-planner (Zendure Schedule) is via HACS geïnstalleerd, Home Assistant is
+#    herstart en de planner is gekoppeld met de knop "Koppel aan Energienerds-planner"
+#    (op de apparaatpagina van de batterij, onder Configuratie).
+#
+# Gebruik:
+#  1. Instellingen -> Dashboards -> Dashboard toevoegen -> "Nieuw dashboard vanaf nul".
+#  2. Open het nieuwe dashboard -> potloodje (bewerken) -> ⋮ -> "Ruwe configuratie-editor".
+#  3. Selecteer ALLES wat er staat (Ctrl+A), plak deze tekst eroverheen en klik op Opslaan.
+#  4. Ververs de pagina met Ctrl+F5.
+#
+# Heet jouw batterij anders? Vervang dan overal "solarflow_3000_mix_ac" door jouw naam
+# (Zoeken en vervangen: Ctrl+H).
+title: Thuisbatterij
+views:
+  - title: Thuisbatterij
+    path: thuisbatterij
+    icon: mdi:home-battery
+    type: sections
+    max_columns: 3
+    sections:
+      # ---------------------------------------------------------------- planner
+      - type: grid
+        column_span: 3
+        cards:
+          - type: custom:zendure-schedule
+            title: ZENDURE PLANNER
+            show_soc: true
+            # Zet op true als je de Nord Pool-integratie (dynamische prijzen) gebruikt.
+            dynamische_energieprijzen: false
+            default_power: 500
+            max_power: 2400
+            grid_options:
+              columns: full
+      # --------------------------------------------------------------- batterij
+      - type: grid
+        cards:
+          - type: heading
+            heading: Batterij
+            icon: mdi:home-battery
+          - type: gauge
+            entity: sensor.solarflow_3000_mix_ac_laadniveau
+            name: Laadniveau
+            min: 0
+            max: 100
+            needle: true
+            severity:
+              red: 0
+              yellow: 15
+              green: 35
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: select.solarflow_3000_mix_ac_bedrijfsmodus
+            name: Bedrijfsmodus
+            features:
+              - type: select-options
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_status
+            name: Status
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_beschikbare_energie
+            name: Beschikbaar
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_resterende_tijd
+            name: Resterende tijd
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_temperatuur
+            name: Temperatuur
+      # ----------------------------------------------------------- vermogen nu
+      - type: grid
+        cards:
+          - type: heading
+            heading: Vermogen nu
+            icon: mdi:flash
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_netvermogen_p1
+            name: Slimme meter
+            icon: mdi:meter-electric-outline
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_accuvermogen_ontladen_laden
+            name: Accu
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_zonnepanelen
+            name: Zonnepanelen
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_doelvermogen
+            name: Doelvermogen
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_vermogen_naar_huis
+            name: Naar huis
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_vermogen_van_het_net
+            name: Van het net
+          - type: heading
+            heading: Energie
+            icon: mdi:lightning-bolt
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_energie_geladen
+            name: Geladen
+          - type: tile
+            entity: sensor.solarflow_3000_mix_ac_energie_ontladen
+            name: Ontladen
+      # -------------------------------------------------------------- grafieken
+      - type: grid
+        cards:
+          - type: heading
+            heading: Nul op de meter
+            icon: mdi:chart-line
+          - type: history-graph
+            title: Slimme meter en accu
+            hours_to_show: 1
+            entities:
+              - entity: sensor.solarflow_3000_mix_ac_netvermogen_p1
+                name: Slimme meter (P1)
+              - entity: sensor.solarflow_3000_mix_ac_accuvermogen_ontladen_laden
+                name: Accu
+            grid_options:
+              columns: full
+              rows: 6
+          - type: history-graph
+            title: Laadniveau (laatste dag)
+            hours_to_show: 24
+            entities:
+              - entity: sensor.solarflow_3000_mix_ac_laadniveau
+                name: Laadniveau
+            grid_options:
+              columns: full
+              rows: 4
